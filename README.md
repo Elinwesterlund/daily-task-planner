@@ -6,7 +6,7 @@ Im building a to do web app. I have built three states, welcome page, to do page
 
 Open the latest version here: https://daybook-task-garden.lovable.app
 
-This preview link needs a Lovable login and is only visible to people with access to the project. To share it with anyone, create a **Share → Create shared preview link**, or publish the app for a public URL.
+This link is public — anyone can open it, no login needed. The preview link inside the Lovable editor does need a Lovable login, so use the address above when sharing.
 
 This project was built with [Lovable](https://lovable.dev).
 
