@@ -309,7 +309,10 @@ function ProfileMenu({ profile, onChange }: { profile: Profile; onChange: (next:
   };
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger className="pill-shadow relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-pill text-xs font-bold uppercase transition hover:-translate-y-0.5 hover:bg-day md:h-11 md:w-11 md:text-sm">
+      <PopoverTrigger
+        aria-label="Profile"
+        className="pill-shadow relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-pill text-xs font-bold uppercase transition hover:-translate-y-0.5 hover:bg-day md:h-11 md:w-11 md:text-sm"
+      >
         {profile.photo ? (
           <img src={profile.photo} alt="" className="absolute inset-0 h-full w-full object-cover" />
         ) : (
