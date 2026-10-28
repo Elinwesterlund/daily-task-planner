@@ -105,7 +105,7 @@ function TodoPage() {
                   className={cn(
                     "pill-shadow flex aspect-[4/5] flex-col items-center justify-center rounded-lg text-base transition hover:-translate-y-1 md:aspect-[4/4.5] md:text-sm",
                     sel
-                      ? "bg-day font-bold outline-2 outline-offset-2 outline-foreground"
+                      ? "bg-day font-bold outline-2 -outline-offset-2 outline-foreground"
                       : "bg-pill hover:bg-day",
                   )}
                 >
