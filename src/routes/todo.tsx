@@ -7,6 +7,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { greeting, usePersisted } from "@/lib/todo-store";
+import { EmojiPicker, Sticker } from "@/components/EmojiPicker";
 
 export const Route = createFileRoute("/todo")({
   head: () => ({
@@ -20,7 +21,7 @@ export const Route = createFileRoute("/todo")({
   component: TodoPage,
 });
 
-type Task = { id: string; text: string; done: boolean };
+type Task = { id: string; text: string; done: boolean; emoji?: string | undefined };
 type List = { id: string; name: string };
 const uid = () => Math.random().toString(36).slice(2, 10);
 const GENERAL = "general";
@@ -32,6 +33,7 @@ function TodoPage() {
   const [tasks, setTasks] = usePersisted<Record<string, Task[]>>("todo.tasks", {});
   const [photos, setPhotos] = usePersisted<(string | null)[]>("todo.photos", [null, null, null]);
   const [draft, setDraft] = useState("");
+  const [draftEmoji, setDraftEmoji] = useState<string | null>(null);
   const [newList, setNewList] = useState<string | null>(null);
   const [calOpen, setCalOpen] = useState(false);
 
@@ -42,7 +44,8 @@ function TodoPage() {
 
   const addTask = () => {
     if (!draft.trim()) return;
-    update((t) => [...t, { id: uid(), text: draft.trim(), done: false }]);
+    update((t) => [...t, { id: uid(), text: draft.trim(), done: false, emoji: draftEmoji ?? undefined }]);
+    setDraftEmoji(null);
     setDraft("");
   };
   const addList = () => {
@@ -65,7 +68,7 @@ function TodoPage() {
       <div className="mx-auto max-w-5xl">
         <header className="mb-6 flex items-center justify-between gap-4">
           <Link to="/" className="text-4xl md:text-5xl" style={{ fontFamily: "var(--font-display)" }}>
-            {greeting()}, Åsa 🌺
+            {greeting()}, Åsa <Sticker name="hibiscus" className="inline-block h-[1em] w-[1em] align-[-0.1em]" />
           </Link>
           <Popover open={calOpen} onOpenChange={setCalOpen}>
             <PopoverTrigger className="pill-shadow flex items-center gap-2 rounded-lg bg-pill px-5 py-2 text-sm font-semibold transition hover:-translate-y-0.5 hover:bg-day">
@@ -167,7 +170,10 @@ function TodoPage() {
                     className={cn("h-3 w-3 shrink-0 rounded-full border border-foreground/60 transition hover:bg-day", t.done && "bg-day-active")}
                   />
                   <div className="pill-shadow flex flex-1 items-center justify-between rounded-md bg-card px-3 py-2 text-sm transition group-hover:-translate-y-0.5">
-                    <span className={cn(t.done && "text-muted-foreground line-through")}>{t.text}</span>
+                    <span className={cn("flex items-center gap-3", t.done && "text-muted-foreground line-through")}>
+                      {t.text}
+                      {t.emoji && <Sticker name={t.emoji} className="h-6 w-6" />}
+                    </span>
                     <button
                       aria-label="Remove task"
                       onClick={() => update((ts) => ts.filter((x) => x.id !== t.id))}
@@ -180,13 +186,21 @@ function TodoPage() {
               ))}
               <li className="flex items-center gap-3">
                 <span className="h-3 w-3 shrink-0 rounded-full border border-foreground/60" />
-                <input
-                  value={draft}
-                  onChange={(e) => setDraft(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && addTask()}
-                  placeholder="Write something"
-                  className="pill-shadow flex-1 rounded-md bg-card px-3 py-2 text-sm italic outline-none placeholder:text-muted-foreground"
-                />
+                <div className="pill-shadow flex flex-1 items-center gap-2 rounded-md bg-card px-3 py-1">
+                  <input
+                    value={draft}
+                    onChange={(e) => setDraft(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && addTask()}
+                    placeholder="Write something"
+                    className="min-w-0 flex-1 bg-transparent py-1 text-sm italic outline-none placeholder:text-muted-foreground"
+                  />
+                  {draftEmoji && (
+                    <button aria-label="Remove emoji" onClick={() => setDraftEmoji(null)} className="transition hover:opacity-60">
+                      <Sticker name={draftEmoji} className="h-6 w-6" />
+                    </button>
+                  )}
+                  <EmojiPicker onPick={setDraftEmoji} />
+                </div>
               </li>
             </ul>
           </section>
