@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { addDays, format, isSameDay, startOfWeek } from "date-fns";
 import { CalendarIcon, ChevronLeft, ChevronRight, ImageIcon, Plus, X } from "lucide-react";
-import beach from "@/assets/beach.jpg";
+import sea from "@/assets/sea.png.asset.json";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";

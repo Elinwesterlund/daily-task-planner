@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import beach from "@/assets/beach.jpg";
+import sea from "@/assets/sea.png.asset.json";
 import { Sticker } from "@/components/EmojiPicker";
 import { greeting } from "@/lib/todo-store";
 
