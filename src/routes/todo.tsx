@@ -172,8 +172,9 @@ function TodoPage() {
           {activeList ? activeName : format(date, "EEEE")}
         </h2>
         <div className="grid gap-4 md:grid-cols-[1.3fr_1fr]">
-          <section className="glass min-h-72 rounded-xl p-4">
-            <ul className="space-y-2">
+          <section className="glass flex min-h-72 flex-col rounded-xl p-4">
+            <ul className="max-h-[17rem] flex-1 space-y-2 overflow-y-auto pr-1 [scrollbar-color:var(--day-active)_transparent] [scrollbar-width:thin]">
+
               {dayTasks.map((t) => (
                 <li key={t.id} className="group flex items-center gap-3">
                   <button
@@ -196,25 +197,26 @@ function TodoPage() {
                   </div>
                 </li>
               ))}
-              <li className="flex items-center gap-3">
-                <span className="h-3 w-3 shrink-0 rounded-full border border-foreground/60" />
-                <div className="pill-shadow flex flex-1 items-center gap-2 rounded-md bg-card px-3 py-1">
-                  <input
-                    value={draft}
-                    onChange={(e) => setDraft(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && addTask()}
-                    placeholder="Write something"
-                    className="min-w-0 flex-1 bg-transparent py-1 text-sm italic outline-none placeholder:text-muted-foreground"
-                  />
-                  {draftEmoji && (
-                    <button aria-label="Remove emoji" onClick={() => setDraftEmoji(null)} className="transition hover:opacity-60">
-                      <Sticker name={draftEmoji} className="h-6 w-6" />
-                    </button>
-                  )}
-                  <EmojiPicker onPick={setDraftEmoji} />
-                </div>
-              </li>
             </ul>
+            <div className="mt-2 flex shrink-0 items-center gap-3">
+              <span className="h-3 w-3 shrink-0 rounded-full border border-foreground/60" />
+              <div className="pill-shadow flex flex-1 items-center gap-2 rounded-md bg-card px-3 py-1">
+                <input
+                  value={draft}
+                  onChange={(e) => setDraft(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && addTask()}
+                  placeholder="Write something"
+                  className="min-w-0 flex-1 bg-transparent py-1 text-sm italic outline-none placeholder:text-muted-foreground"
+                />
+                {draftEmoji && (
+                  <button aria-label="Remove emoji" onClick={() => setDraftEmoji(null)} className="transition hover:opacity-60">
+                    <Sticker name={draftEmoji} className="h-6 w-6" />
+                  </button>
+                )}
+                <EmojiPicker onPick={setDraftEmoji} />
+              </div>
+            </div>
+
           </section>
 
           <section className="grid grid-cols-2 grid-rows-2 gap-4">
