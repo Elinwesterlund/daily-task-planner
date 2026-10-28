@@ -65,8 +65,13 @@ function TodoPage() {
   const activeName = lists.find((l) => l.id === activeList)?.name;
 
   return (
-    <main className="min-h-screen bg-cover bg-fixed bg-center px-4 py-10" style={{ backgroundImage: `url(${sea.url})` }}>
-      <div className="mx-auto max-w-5xl">
+    <main className="relative min-h-screen overflow-hidden bg-background px-4 py-10">
+      <div
+        aria-hidden
+        className="fixed inset-0 bg-cover bg-center opacity-60"
+        style={{ backgroundImage: `url(${sea.url})` }}
+      />
+      <div className="relative mx-auto max-w-5xl">
         <header className="mb-6 flex items-center justify-between gap-4">
           <Link to="/" className="text-4xl md:text-5xl" style={{ fontFamily: "var(--font-display)" }}>
             {greeting()}, Åsa <Sticker name="hibiscus" className="inline-block h-[1em] w-[1em] align-[-0.1em]" />
