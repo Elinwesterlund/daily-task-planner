@@ -118,10 +118,19 @@ function TodoPage() {
         {/* Lists */}
         <h2 className="mt-5 mb-2 text-sm font-semibold" style={{ fontFamily: "var(--font-sans)" }}>Lists</h2>
         <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={() => setActiveList(null)}
+            className={cn(
+              "pill-shadow flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold transition hover:-translate-y-0.5",
+              activeList === null ? "bg-day" : "bg-pill hover:bg-day/70",
+            )}
+          >
+            <Leaf className="h-4 w-4" /> {format(date, "EEEE")}
+          </button>
           {lists.map((l) => (
             <div key={l.id} className="group relative">
               <button
-                onClick={() => setActiveList(activeList === l.id ? GENERAL : l.id)}
+                onClick={() => setActiveList(activeList === l.id ? null : l.id)}
                 className={cn(
                   "pill-shadow rounded-lg px-5 py-2 text-sm font-semibold transition hover:-translate-y-0.5",
                   activeList === l.id ? "bg-day" : "bg-pill hover:bg-day/70",
@@ -156,8 +165,13 @@ function TodoPage() {
         </div>
 
         {/* Day */}
-        <h2 className="mt-5 mb-2 text-sm font-semibold" style={{ fontFamily: "var(--font-sans)" }}>
-          {activeName ?? format(date, "EEEE")}
+        <h2 className="mt-5 mb-2 flex items-center gap-2 text-sm font-semibold" style={{ fontFamily: "var(--font-sans)" }}>
+          {activeList ? activeName : (
+            <>
+              {format(date, "EEEE")}
+              {isToday(date) && <Leaf className="h-4 w-4" />}
+            </>
+          )}
         </h2>
         <div className="grid gap-4 md:grid-cols-[1fr_1.2fr]">
           <section className="glass min-h-72 rounded-xl p-4">
