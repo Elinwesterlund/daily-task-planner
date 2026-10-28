@@ -47,7 +47,7 @@ const listeners = new Set<() => void>();
 const emit = () => listeners.forEach((fn) => fn());
 
 /** Read the saved profile once on mount; only ever written back by saveProfile. */
-function hydrateProfile() {
+export function hydrateProfile() {
   try {
     const raw = localStorage.getItem(PROFILE_KEY);
     if (!raw) return;
