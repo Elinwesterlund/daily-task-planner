@@ -88,11 +88,11 @@ function TodoPage() {
         </header>
 
         {/* Week strip */}
-        <section className="glass flex items-center gap-2 rounded-xl p-4 md:p-6">
-          <button aria-label="Previous week" onClick={() => setDate(addDays(date, -7))} className="rounded-full p-1 transition hover:bg-pill">
-            <ChevronLeft className="h-5 w-5" />
+        <section className="glass flex items-center gap-1 rounded-xl p-2 md:gap-2 md:p-6">
+          <button aria-label="Previous week" onClick={() => setDate(addDays(date, -7))} className="rounded-full p-0.5 transition hover:bg-pill md:p-1">
+            <ChevronLeft className="h-4 w-4 md:h-5 md:w-5" />
           </button>
-          <div className="grid flex-1 grid-cols-7 gap-2 md:gap-4">
+          <div className="grid flex-1 grid-cols-7 gap-1.5 md:gap-4">
             {week.map((d) => {
               const sel = isSameDay(d, date);
               const today = isSameDay(d, new Date());
@@ -101,18 +101,18 @@ function TodoPage() {
                   key={d.toISOString()}
                   onClick={() => { setDate(d); setActiveList(null); }}
                   className={cn(
-                    "pill-shadow flex aspect-[4/4.5] flex-col items-center justify-center rounded-lg text-sm transition hover:-translate-y-1",
+                    "pill-shadow flex aspect-[4/5] flex-col items-center justify-center rounded-lg text-base transition hover:-translate-y-1 md:aspect-[4/4.5] md:text-sm",
                     sel ? "border border-foreground/60 bg-day-active" : "bg-day hover:bg-day-active/70",
                   )}
                 >
-                  <span className="font-display text-base">{format(d, "EEE")}</span>
-                  <span className={cn("mt-1", today && "font-bold underline")}>{format(d, "d")}</span>
+                  <span className="font-display text-lg md:text-base">{format(d, "EEE")}</span>
+                  <span className={cn("mt-1 text-sm md:text-xs", today && "font-bold underline")}>{format(d, "d")}</span>
                 </button>
               );
             })}
           </div>
-          <button aria-label="Next week" onClick={() => setDate(addDays(date, 7))} className="rounded-full p-1 transition hover:bg-pill">
-            <ChevronRight className="h-5 w-5" />
+          <button aria-label="Next week" onClick={() => setDate(addDays(date, 7))} className="rounded-full p-0.5 transition hover:bg-pill md:p-1">
+            <ChevronRight className="h-4 w-4 md:h-5 md:w-5" />
           </button>
         </section>
 
