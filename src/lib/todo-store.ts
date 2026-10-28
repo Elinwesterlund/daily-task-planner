@@ -48,6 +48,7 @@ const emit = () => listeners.forEach((fn) => fn());
 
 /** Read the saved profile once on mount; only ever written back by saveProfile. */
 export function hydrateProfile() {
+  profile = { name: DEFAULT_NAME, photo: null };
   try {
     const raw = localStorage.getItem(PROFILE_KEY);
     if (!raw) return;
