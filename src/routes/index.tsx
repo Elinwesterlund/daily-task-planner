@@ -17,22 +17,18 @@ export const Route = createFileRoute("/")({
 
 function Welcome() {
   return (
-    <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background px-4 text-center">
-      <div
-        aria-hidden
-        className="absolute inset-0 bg-cover bg-center opacity-60"
-        style={{ backgroundImage: `url(${sea.url})` }}
-      />
-      <div className="relative">
-        <h1 className="text-5xl md:text-6xl">{greeting()}, Åsa <Sticker name="hibiscus" className="inline-block h-[1em] w-[1em] align-[-0.1em]" /></h1>
-        <p className="mt-3 text-sm">Let's start planning today's journey, one task at a time.</p>
-        <Link
-          to="/todo"
-          className="pill-shadow mt-8 rounded-lg bg-pill px-12 py-3 text-sm font-semibold transition hover:-translate-y-0.5 hover:bg-day"
-        >
-          To do
-        </Link>
-      </div>
+    <main
+      className="flex min-h-screen flex-col items-center justify-center bg-cover bg-center px-4 text-center"
+      style={{ backgroundImage: `url(${sea.url})` }}
+    >
+      <h1 className="text-5xl md:text-6xl">{greeting()}, Åsa <Sticker name="hibiscus" className="inline-block h-[1em] w-[1em] align-[-0.1em]" /></h1>
+      <p className="mt-3 text-sm">Let's start planning today's journey, one task at a time.</p>
+      <Link
+        to="/todo"
+        className="pill-shadow mt-8 rounded-lg bg-pill px-12 py-3 text-sm font-semibold transition hover:-translate-y-0.5 hover:bg-day"
+      >
+        To do
+      </Link>
     </main>
   );
 }
