@@ -192,9 +192,9 @@ function TodoPage() {
           </section>
 
           <section className="grid grid-cols-2 grid-rows-2 gap-4">
-            <PhotoSlot src={photos[0]} onChange={(v) => setPhotos((p) => p.map((x, i) => (i === 0 ? v : x)))} />
-            <PhotoSlot src={photos[2]} className="row-span-2" onChange={(v) => setPhotos((p) => p.map((x, i) => (i === 2 ? v : x)))} />
-            <PhotoSlot src={photos[1]} onChange={(v) => setPhotos((p) => p.map((x, i) => (i === 1 ? v : x)))} />
+            <PhotoSlot src={photos[0] ?? null} onChange={(v) => setPhotos((p) => p.map((x, i) => (i === 0 ? v : x)))} />
+            <PhotoSlot src={photos[2] ?? null} className="row-span-2" onChange={(v) => setPhotos((p) => p.map((x, i) => (i === 2 ? v : x)))} />
+            <PhotoSlot src={photos[1] ?? null} onChange={(v) => setPhotos((p) => p.map((x, i) => (i === 1 ? v : x)))} />
           </section>
         </div>
       </div>
