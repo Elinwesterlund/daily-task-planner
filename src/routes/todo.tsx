@@ -235,6 +235,7 @@ function TodoPage() {
 function PhotoSlot({ src, onChange, className }: { src: string | null; onChange: (v: string | null) => void; className?: string }) {
   const ref = useRef<HTMLInputElement>(null);
   const pick = (f?: File) => {
+    if (ref.current) ref.current.value = "";
     if (!f) return;
     const img = new Image();
     img.onload = () => {
