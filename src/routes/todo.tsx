@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { addDays, format, isSameDay, isToday, startOfWeek } from "date-fns";
-import { CalendarIcon, ChevronLeft, ChevronRight, ImageIcon, Leaf, Plus, X } from "lucide-react";
+import { addDays, format, isSameDay, startOfWeek } from "date-fns";
+import { CalendarIcon, ChevronLeft, ChevronRight, ImageIcon, Plus, X } from "lucide-react";
 import beach from "@/assets/beach.jpg";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -126,7 +126,7 @@ function TodoPage() {
               activeList === null ? "bg-day" : "bg-pill hover:bg-day/70",
             )}
           >
-            <Leaf className="h-4 w-4" /> {format(date, "EEEE")}
+            {format(date, "EEEE")}
           </button>
           {lists.map((l) => (
             <div key={l.id} className="group relative">
@@ -166,15 +166,10 @@ function TodoPage() {
         </div>
 
         {/* Day */}
-        <h2 className="mt-5 mb-2 flex items-center gap-2 text-sm font-semibold" style={{ fontFamily: "var(--font-sans)" }}>
-          {activeList ? activeName : (
-            <>
-              {format(date, "EEEE")}
-              {isToday(date) && <Leaf className="h-4 w-4" />}
-            </>
-          )}
+        <h2 className="mt-5 mb-2 text-sm font-semibold" style={{ fontFamily: "var(--font-sans)" }}>
+          {activeList ? activeName : format(date, "EEEE")}
         </h2>
-        <div className="grid gap-4 md:grid-cols-[1fr_1.2fr]">
+        <div className="grid gap-4 md:grid-cols-[1.3fr_1fr]">
           <section className="glass min-h-72 rounded-xl p-4">
             <ul className="space-y-2">
               {dayTasks.map((t) => (
