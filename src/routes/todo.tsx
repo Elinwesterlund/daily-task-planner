@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useRef, useState } from "react";
-import { addDays, format, isSameDay, startOfWeek } from "date-fns";
-import { CalendarIcon, ChevronLeft, ChevronRight, ImageIcon, Plus, X } from "lucide-react";
+import { addDays, format, isSameDay, isToday, startOfWeek } from "date-fns";
+import { CalendarIcon, ChevronLeft, ChevronRight, ImageIcon, Leaf, Plus, X } from "lucide-react";
 import beach from "@/assets/beach.jpg";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -24,12 +24,11 @@ export const Route = createFileRoute("/todo")({
 type Task = { id: string; text: string; done: boolean; emoji?: string | undefined };
 type List = { id: string; name: string };
 const uid = () => Math.random().toString(36).slice(2, 10);
-const GENERAL = "general";
 
 function TodoPage() {
   const [date, setDate] = useState(new Date());
   const [lists, setLists] = usePersisted<List[]>("todo.lists", []);
-  const [activeList, setActiveList] = useState<string>(GENERAL);
+  const [activeList, setActiveList] = useState<string | null>(null);
   const [tasks, setTasks] = usePersisted<Record<string, Task[]>>("todo.tasks", {});
   const [photos, setPhotos] = usePersisted<(string | null)[]>("todo.photos", [null, null, null]);
   const [draft, setDraft] = useState("");
@@ -38,7 +37,8 @@ function TodoPage() {
   const [calOpen, setCalOpen] = useState(false);
 
   const week = Array.from({ length: 7 }, (_, i) => addDays(startOfWeek(date, { weekStartsOn: 1 }), i));
-  const key = `${activeList}|${format(date, "yyyy-MM-dd")}`;
+  const dayKey = `day|${format(date, "yyyy-MM-dd")}`;
+  const key = activeList ?? dayKey;
   const dayTasks = tasks[key] ?? [];
   const update = (fn: (t: Task[]) => Task[]) => setTasks((all) => ({ ...all, [key]: fn(all[key] ?? []) }));
 
@@ -59,7 +59,7 @@ function TodoPage() {
   const removeList = (id: string) => {
     setLists((ls) => ls.filter((l) => l.id !== id));
     setTasks((all) => Object.fromEntries(Object.entries(all).filter(([k]) => !k.startsWith(id + "|"))));
-    if (activeList === id) setActiveList(GENERAL);
+    if (activeList === id) setActiveList(null);
   };
   const activeName = lists.find((l) => l.id === activeList)?.name;
 
