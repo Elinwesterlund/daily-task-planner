@@ -157,7 +157,7 @@ function TodoPage() {
 
         {/* Day */}
         <h2 className="mt-5 mb-2 text-sm font-semibold" style={{ fontFamily: "var(--font-sans)" }}>
-          {format(date, "EEEE")}{activeName ? ` · ${activeName}` : ""}
+          {activeName ?? format(date, "EEEE")}
         </h2>
         <div className="grid gap-4 md:grid-cols-[1fr_1.2fr]">
           <section className="glass min-h-72 rounded-xl p-4">
