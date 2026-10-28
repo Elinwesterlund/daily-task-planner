@@ -21,7 +21,7 @@ export const Route = createFileRoute("/todo")({
   component: TodoPage,
 });
 
-type Task = { id: string; text: string; done: boolean; emoji?: string };
+type Task = { id: string; text: string; done: boolean; emoji?: string | undefined };
 type List = { id: string; name: string };
 const uid = () => Math.random().toString(36).slice(2, 10);
 const GENERAL = "general";
