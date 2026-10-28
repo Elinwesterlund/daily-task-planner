@@ -1,12 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { addDays, format, isSameDay, startOfWeek } from "date-fns";
-import { CalendarIcon, ChevronLeft, ChevronRight, ImageIcon, Plus, X } from "lucide-react";
+import { CalendarIcon, Camera, ChevronLeft, ChevronRight, ImageIcon, Pencil, Plus, Trash2, X } from "lucide-react";
 import sea from "@/assets/sea.png.asset.json";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { greeting, migrateDayTasks, usePersisted } from "@/lib/todo-store";
+import { DEFAULT_NAME, greeting, migrateDayTasks, usePersisted, useProfile, type Profile } from "@/lib/todo-store";
 import { EmojiPicker, Sticker } from "@/components/EmojiPicker";
 
 export const Route = createFileRoute("/todo")({
@@ -27,6 +27,7 @@ const uid = () => Math.random().toString(36).slice(2, 10);
 
 function TodoPage() {
   useEffect(() => { migrateDayTasks(); }, []);
+  const [{ name, photo }, setProfile] = useProfile();
   const [date, setDate] = useState(new Date());
   const [lists, setLists] = usePersisted<List[]>("todo.lists", []);
   const [activeList, setActiveList] = useState<string | null>(null);
@@ -69,7 +70,7 @@ function TodoPage() {
       <div className="mx-auto max-w-5xl">
         <header className="mb-6 flex items-center justify-between gap-4">
           <Link to="/" className="text-4xl md:text-5xl" style={{ fontFamily: "var(--font-display)" }}>
-            {greeting()}, Åsa <Sticker name="hibiscus" className="inline-block h-[1em] w-[1em] align-[-0.1em]" />
+            {greeting()}, {name} <Sticker name="hibiscus" className="inline-block h-[1em] w-[1em] align-[-0.1em]" />
           </Link>
           <Popover open={calOpen} onOpenChange={setCalOpen}>
             <PopoverTrigger className="pill-shadow flex items-center gap-2 rounded-lg bg-pill px-3 py-1.5 text-xs font-semibold transition hover:-translate-y-0.5 hover:bg-day md:px-5 md:py-2 md:text-sm">
@@ -87,6 +88,7 @@ function TodoPage() {
               />
             </PopoverContent>
           </Popover>
+          <ProfileMenu profile={{ name, photo }} onChange={setProfile} />
         </header>
 
         {/* Week strip */}
@@ -269,5 +271,107 @@ function PhotoSlot({ src, onChange, className }: { src: string | null; onChange:
         </button>
       )}
     </div>
+  );
+}
+
+const AVATAR_SIZE = 192;
+
+/** Center-crop a picked picture to a square and shrink it, so an avatar can never bloat storage. */
+function readAvatar(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const side = Math.min(img.width, img.height);
+      const c = document.createElement("canvas");
+      c.width = AVATAR_SIZE;
+      c.height = AVATAR_SIZE;
+      c.getContext("2d")!.drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, 0, 0, AVATAR_SIZE, AVATAR_SIZE);
+      URL.revokeObjectURL(img.src);
+      resolve(c.toDataURL("image/jpeg", 0.8));
+    };
+    img.onerror = () => reject(new Error("unreadable picture"));
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+function initials(name: string) {
+  return (name.match(/[\p{L}]/gu)?.slice(0, 2).join("") ?? "").toUpperCase() || "?";
+}
+
+function ProfileMenu({ profile, onChange }: { profile: Profile; onChange: (next: Partial<Profile>) => void }) {
+  const [open, setOpen] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const pick = async (f?: File) => {
+    if (!f) return;
+    try {
+      onChange({ photo: await readAvatar(f) });
+    } catch {}
+  };
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger
+        aria-label="Profile"
+        className="pill-shadow relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-pill text-xs font-bold uppercase transition hover:-translate-y-0.5 hover:bg-day md:h-11 md:w-11 md:text-sm"
+      >
+        {profile.photo ? (
+          <img src={profile.photo} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        ) : (
+          initials(profile.name)
+        )}
+      </PopoverTrigger>
+      <PopoverContent align="end" className="w-64 p-3">
+        <div className="flex items-center gap-3">
+          <div className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-pill text-lg font-bold uppercase">
+            {profile.photo ? (
+              <img src={profile.photo} alt="" className="absolute inset-0 h-full w-full object-cover" />
+            ) : (
+              initials(profile.name)
+            )}
+          </div>
+          <div className="min-w-0">
+            <p className="truncate font-semibold">{profile.name}</p>
+            <p className="text-xs text-muted-foreground">Your name and picture</p>
+          </div>
+        </div>
+        <label className="mt-3 flex items-center gap-2 rounded-md bg-card px-3 py-2 pill-shadow">
+          <Pencil className="h-3.5 w-3.5 shrink-0 opacity-60" />
+          <input
+            aria-label="Your name"
+            value={profile.name === DEFAULT_NAME ? "" : profile.name}
+            onChange={(e) => onChange({ name: e.target.value })}
+            onKeyDown={(e) => e.key === "Enter" && setOpen(false)}
+            placeholder={DEFAULT_NAME}
+            className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+          />
+        </label>
+        <div className="mt-2 flex items-center gap-2">
+          <button
+            onClick={() => fileRef.current?.click()}
+            className="pill-shadow flex flex-1 items-center justify-center gap-2 rounded-md bg-pill px-3 py-2 text-xs font-semibold transition hover:-translate-y-0.5 hover:bg-day"
+          >
+            <Camera className="h-3.5 w-3.5" /> Photo
+          </button>
+          <button
+            aria-label="Remove picture"
+            onClick={() => onChange({ photo: null })}
+            disabled={!profile.photo}
+            className="pill-shadow flex items-center justify-center rounded-md bg-pill px-3 py-2 transition hover:-translate-y-0.5 hover:bg-day disabled:opacity-40"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
+        </div>
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          hidden
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            e.target.value = "";
+            void pick(f);
+          }}
+        />
+      </PopoverContent>
+    </Popover>
   );
 }

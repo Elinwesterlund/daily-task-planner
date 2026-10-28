@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 
 export function greeting(d = new Date()) {
   const h = d.getHours();
@@ -36,4 +36,51 @@ export function usePersisted<T>(key: string, initial: T) {
     } catch {}
   }, [key, value, loaded]);
   return [value, setValue] as const;
+}
+
+export type Profile = { name: string; photo: string | null };
+export const DEFAULT_NAME = "Åsa";
+const PROFILE_KEY = "todo.profile";
+
+let profile: Profile = { name: DEFAULT_NAME, photo: null };
+const listeners = new Set<() => void>();
+const emit = () => listeners.forEach((fn) => fn());
+
+/** Read the saved profile once on mount; only ever written back by saveProfile. */
+export function hydrateProfile() {
+  profile = { name: DEFAULT_NAME, photo: null };
+  try {
+    const raw = localStorage.getItem(PROFILE_KEY);
+    if (!raw) return;
+    const p = JSON.parse(raw) as Partial<Profile>;
+    profile = { name: p.name?.trim() || DEFAULT_NAME, photo: p.photo ?? null };
+    emit();
+  } catch {}
+}
+
+export const getProfile = () => profile;
+
+export function saveProfile(next: Partial<Profile>) {
+  const merged: Profile = {
+    name: next.name === undefined ? profile.name : next.name.trim() || DEFAULT_NAME,
+    photo: next.photo === undefined ? profile.photo : next.photo,
+  };
+  profile = merged;
+  try {
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(merged));
+  } catch {}
+  emit();
+}
+
+export function useProfile() {
+  const value = useSyncExternalStore(
+    (cb) => {
+      listeners.add(cb);
+      return () => listeners.delete(cb);
+    },
+    () => profile,
+    () => profile,
+  );
+  useEffect(hydrateProfile, []);
+  return [value, saveProfile] as const;
 }
