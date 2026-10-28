@@ -94,7 +94,7 @@ function TodoPage() {
           <button aria-label="Previous week" onClick={() => setDate(addDays(date, -7))} className="hidden rounded-full p-1 transition hover:bg-pill md:block">
             <ChevronLeft className="h-5 w-5" />
           </button>
-          <div className="flex flex-1 gap-1.5 overflow-x-auto md:grid md:grid-cols-7 md:gap-4 md:overflow-visible">
+          <div className="grid flex-1 grid-cols-7 gap-1.5 md:gap-4">
             {week.map((d) => {
               const sel = isSameDay(d, date);
               const today = isSameDay(d, new Date());
@@ -103,7 +103,7 @@ function TodoPage() {
                   key={d.toISOString()}
                   onClick={() => { setDate(d); setActiveList(null); }}
                   className={cn(
-                    "pill-shadow flex aspect-[4/5] min-w-14 shrink-0 flex-col items-center justify-center rounded-lg text-base transition hover:-translate-y-1 md:aspect-[4/4.5] md:min-w-0 md:text-sm",
+                    "pill-shadow flex aspect-[4/5] flex-col items-center justify-center rounded-lg text-base transition hover:-translate-y-1 md:aspect-[4/4.5] md:text-sm",
                     sel ? "border border-foreground/60 bg-day-active" : "bg-day hover:bg-day-active/70",
                   )}
                 >
