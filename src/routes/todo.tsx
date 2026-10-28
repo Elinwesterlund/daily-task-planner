@@ -72,8 +72,10 @@ function TodoPage() {
             {greeting()}, Åsa <Sticker name="hibiscus" className="inline-block h-[1em] w-[1em] align-[-0.1em]" />
           </Link>
           <Popover open={calOpen} onOpenChange={setCalOpen}>
-            <PopoverTrigger className="pill-shadow flex items-center gap-2 rounded-lg bg-pill px-5 py-2 text-sm font-semibold transition hover:-translate-y-0.5 hover:bg-day">
-              {format(date, "MMMM yyyy")} <CalendarIcon className="h-4 w-4" />
+            <PopoverTrigger className="pill-shadow flex items-center gap-2 rounded-lg bg-pill px-3 py-1.5 text-xs font-semibold transition hover:-translate-y-0.5 hover:bg-day md:px-5 md:py-2 md:text-sm">
+              <span className="md:hidden">{format(date, "MMMM")}</span>
+              <span className="hidden md:inline">{format(date, "MMMM yyyy")}</span>
+              <CalendarIcon className="h-3.5 w-3.5 md:h-4 md:w-4" />
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="end">
               <Calendar
@@ -89,10 +91,10 @@ function TodoPage() {
 
         {/* Week strip */}
         <section className="glass flex items-center gap-1 rounded-xl p-2 md:gap-2 md:p-6">
-          <button aria-label="Previous week" onClick={() => setDate(addDays(date, -7))} className="rounded-full p-0.5 transition hover:bg-pill md:p-1">
-            <ChevronLeft className="h-4 w-4 md:h-5 md:w-5" />
+          <button aria-label="Previous week" onClick={() => setDate(addDays(date, -7))} className="hidden rounded-full p-1 transition hover:bg-pill md:block">
+            <ChevronLeft className="h-5 w-5" />
           </button>
-          <div className="grid flex-1 grid-cols-7 gap-1.5 md:gap-4">
+          <div className="flex flex-1 gap-1.5 overflow-x-auto md:grid md:grid-cols-7 md:gap-4 md:overflow-visible">
             {week.map((d) => {
               const sel = isSameDay(d, date);
               const today = isSameDay(d, new Date());
@@ -101,7 +103,7 @@ function TodoPage() {
                   key={d.toISOString()}
                   onClick={() => { setDate(d); setActiveList(null); }}
                   className={cn(
-                    "pill-shadow flex aspect-[4/5] flex-col items-center justify-center rounded-lg text-base transition hover:-translate-y-1 md:aspect-[4/4.5] md:text-sm",
+                    "pill-shadow flex aspect-[4/5] min-w-14 shrink-0 flex-col items-center justify-center rounded-lg text-base transition hover:-translate-y-1 md:aspect-[4/4.5] md:min-w-0 md:text-sm",
                     sel ? "border border-foreground/60 bg-day-active" : "bg-day hover:bg-day-active/70",
                   )}
                 >
@@ -111,8 +113,8 @@ function TodoPage() {
               );
             })}
           </div>
-          <button aria-label="Next week" onClick={() => setDate(addDays(date, 7))} className="rounded-full p-0.5 transition hover:bg-pill md:p-1">
-            <ChevronRight className="h-4 w-4 md:h-5 md:w-5" />
+          <button aria-label="Next week" onClick={() => setDate(addDays(date, 7))} className="hidden rounded-full p-1 transition hover:bg-pill md:block">
+            <ChevronRight className="h-5 w-5" />
           </button>
         </section>
 
