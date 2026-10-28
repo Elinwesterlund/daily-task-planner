@@ -90,7 +90,7 @@ function TodoPage() {
               />
             </PopoverContent>
           </Popover>
-          <ProfileMenu profile={{ name, photo }} onChange={setProfile} />
+          </div>
         </header>
 
         {/* Week strip */}
