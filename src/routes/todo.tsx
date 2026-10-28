@@ -221,7 +221,7 @@ function TodoPage() {
 
           </section>
 
-          <section className="grid grid-cols-2 grid-rows-2 gap-4">
+          <section className="grid h-[17rem] grid-cols-2 grid-rows-2 gap-4 md:h-auto">
             <PhotoSlot src={photos[0] ?? null} onChange={(v) => setPhotos((p) => p.map((x, i) => (i === 0 ? v : x)))} />
             <PhotoSlot src={photos[2] ?? null} className="row-span-2" onChange={(v) => setPhotos((p) => p.map((x, i) => (i === 2 ? v : x)))} />
             <PhotoSlot src={photos[1] ?? null} onChange={(v) => setPhotos((p) => p.map((x, i) => (i === 1 ? v : x)))} />
@@ -253,7 +253,7 @@ function PhotoSlot({ src, onChange, className }: { src: string | null; onChange:
       <input ref={ref} type="file" accept="image/*" hidden onChange={(e) => pick(e.target.files?.[0])} />
       {src ? (
         <>
-          <img src={src} alt="" className="h-full w-full object-cover transition group-hover:scale-105" />
+          <img src={src} alt="" className="absolute inset-0 h-full w-full object-cover transition group-hover:scale-105" />
           <button
             aria-label="Remove photo"
             onClick={() => onChange(null)}
@@ -263,7 +263,7 @@ function PhotoSlot({ src, onChange, className }: { src: string | null; onChange:
           </button>
         </>
       ) : (
-        <button aria-label="Add photo" onClick={() => ref.current?.click()} className="flex h-full w-full items-center justify-center transition hover:bg-pill/60">
+        <button aria-label="Add photo" onClick={() => ref.current?.click()} className="absolute inset-0 flex items-center justify-center transition hover:bg-pill/60">
           <ImageIcon className="h-6 w-6" />
         </button>
       )}
