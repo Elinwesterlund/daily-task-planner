@@ -334,7 +334,7 @@ function ProfileMenu({ profile, onChange }: { profile: Profile; onChange: (next:
           <Pencil className="h-3.5 w-3.5 shrink-0 opacity-60" />
           <input
             aria-label="Your name"
-            value={profile.name === DEFAULT_NAME ? (localStorage.getItem("todo.profile") ? profile.name : "") : profile.name}
+            value={profile.name === DEFAULT_NAME ? "" : profile.name}
             onChange={(e) => onChange({ name: e.target.value })}
             onKeyDown={(e) => e.key === "Enter" && setOpen(false)}
             placeholder={DEFAULT_NAME}
