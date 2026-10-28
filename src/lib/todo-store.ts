@@ -61,7 +61,7 @@ export const getProfile = () => profile;
 
 export function saveProfile(next: Partial<Profile>) {
   const merged: Profile = {
-    name: next.name?.trim() || DEFAULT_NAME,
+    name: next.name === undefined ? profile.name : next.name.trim() || DEFAULT_NAME,
     photo: next.photo === undefined ? profile.photo : next.photo,
   };
   profile = merged;
