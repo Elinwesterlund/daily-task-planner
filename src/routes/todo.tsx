@@ -68,7 +68,9 @@ function TodoPage() {
   return (
     <main className="min-h-screen bg-cover bg-fixed bg-center px-4 py-10" style={{ backgroundImage: `url(${sea.url})` }}>
       <div className="mx-auto max-w-5xl">
-        <header className="mb-6 flex items-center justify-between gap-4">
+        <header className="mb-6 flex flex-col items-end gap-3">
+          <ProfileMenu profile={{ name, photo }} onChange={setProfile} />
+          <div className="flex w-full items-center justify-between gap-4">
           <Link to="/" className="text-4xl md:text-5xl" style={{ fontFamily: "var(--font-display)" }}>
             {greeting()}, {name} <Sticker name="hibiscus" className="inline-block h-[1em] w-[1em] align-[-0.1em]" />
           </Link>
