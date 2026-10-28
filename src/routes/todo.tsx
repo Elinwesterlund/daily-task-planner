@@ -104,7 +104,9 @@ function TodoPage() {
                   onClick={() => { setDate(d); setActiveList(null); }}
                   className={cn(
                     "pill-shadow flex aspect-[4/5] flex-col items-center justify-center rounded-lg text-base transition hover:-translate-y-1 md:aspect-[4/4.5] md:text-sm",
-                    sel ? "border border-foreground/60 bg-day-active" : "bg-day hover:bg-day-active/70",
+                    sel
+                      ? "bg-day font-bold outline-2 -outline-offset-2 outline-foreground"
+                      : "bg-pill hover:bg-day",
                   )}
                 >
                   <span className="font-display text-lg md:text-base">{format(d, "EEE")}</span>
