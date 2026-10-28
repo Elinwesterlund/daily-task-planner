@@ -1,24 +1,33 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import beach from "@/assets/beach.jpg";
+import { greeting } from "@/lib/todo-store";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "Welcome — Today planner" },
+      { name: "description", content: "Let's start planning today's journey, one task at a time." },
+      { property: "og:title", content: "Welcome — Today planner" },
+      { property: "og:description", content: "Let's start planning today's journey, one task at a time." },
+    ],
+  }),
+  component: Welcome,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function Welcome() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
+    <main
+      className="flex min-h-screen flex-col items-center justify-center bg-cover bg-center px-4 text-center"
+      style={{ backgroundImage: `url(${beach})` }}
     >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+      <h1 className="text-5xl md:text-6xl">{greeting()}, Åsa 🌺</h1>
+      <p className="mt-3 text-sm">Let's start planning today's journey, one task at a time.</p>
+      <Link
+        to="/todo"
+        className="pill-shadow mt-8 rounded-lg bg-pill px-12 py-3 text-sm font-semibold transition hover:-translate-y-0.5 hover:bg-day"
+      >
+        To do
+      </Link>
+    </main>
   );
 }
