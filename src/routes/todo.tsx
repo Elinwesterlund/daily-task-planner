@@ -1,12 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useRef, useState } from "react";
-import { addDays, format, isSameDay, startOfWeek } from "date-fns";
-import { CalendarIcon, ChevronLeft, ChevronRight, ImageIcon, Plus, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { addDays, format, isSameDay, isToday, startOfWeek } from "date-fns";
+import { CalendarIcon, ChevronLeft, ChevronRight, ImageIcon, Leaf, Plus, X } from "lucide-react";
 import beach from "@/assets/beach.jpg";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { greeting, usePersisted } from "@/lib/todo-store";
+import { greeting, migrateDayTasks, usePersisted } from "@/lib/todo-store";
 import { EmojiPicker, Sticker } from "@/components/EmojiPicker";
 
 export const Route = createFileRoute("/todo")({
@@ -24,12 +24,12 @@ export const Route = createFileRoute("/todo")({
 type Task = { id: string; text: string; done: boolean; emoji?: string | undefined };
 type List = { id: string; name: string };
 const uid = () => Math.random().toString(36).slice(2, 10);
-const GENERAL = "general";
 
 function TodoPage() {
+  useEffect(() => { migrateDayTasks(); }, []);
   const [date, setDate] = useState(new Date());
   const [lists, setLists] = usePersisted<List[]>("todo.lists", []);
-  const [activeList, setActiveList] = useState<string>(GENERAL);
+  const [activeList, setActiveList] = useState<string | null>(null);
   const [tasks, setTasks] = usePersisted<Record<string, Task[]>>("todo.tasks", {});
   const [photos, setPhotos] = usePersisted<(string | null)[]>("todo.photos", [null, null, null]);
   const [draft, setDraft] = useState("");
@@ -38,7 +38,8 @@ function TodoPage() {
   const [calOpen, setCalOpen] = useState(false);
 
   const week = Array.from({ length: 7 }, (_, i) => addDays(startOfWeek(date, { weekStartsOn: 1 }), i));
-  const key = `${activeList}|${format(date, "yyyy-MM-dd")}`;
+  const dayKey = `day|${format(date, "yyyy-MM-dd")}`;
+  const key = activeList ?? dayKey;
   const dayTasks = tasks[key] ?? [];
   const update = (fn: (t: Task[]) => Task[]) => setTasks((all) => ({ ...all, [key]: fn(all[key] ?? []) }));
 
@@ -59,7 +60,7 @@ function TodoPage() {
   const removeList = (id: string) => {
     setLists((ls) => ls.filter((l) => l.id !== id));
     setTasks((all) => Object.fromEntries(Object.entries(all).filter(([k]) => !k.startsWith(id + "|"))));
-    if (activeList === id) setActiveList(GENERAL);
+    if (activeList === id) setActiveList(null);
   };
   const activeName = lists.find((l) => l.id === activeList)?.name;
 
@@ -78,7 +79,7 @@ function TodoPage() {
               <Calendar
                 mode="single"
                 selected={date}
-                onSelect={(d) => { if (d) { setDate(d); setCalOpen(false); } }}
+                onSelect={(d) => { if (d) { setDate(d); setActiveList(null); setCalOpen(false); } }}
                 weekStartsOn={1}
                 className="pointer-events-auto p-3"
               />
@@ -98,7 +99,7 @@ function TodoPage() {
               return (
                 <button
                   key={d.toISOString()}
-                  onClick={() => setDate(d)}
+                  onClick={() => { setDate(d); setActiveList(null); }}
                   className={cn(
                     "pill-shadow flex aspect-[4/4.5] flex-col items-center justify-center rounded-lg text-sm transition hover:-translate-y-1",
                     sel ? "border border-foreground/60 bg-day-active" : "bg-day hover:bg-day-active/70",
@@ -118,10 +119,19 @@ function TodoPage() {
         {/* Lists */}
         <h2 className="mt-5 mb-2 text-sm font-semibold" style={{ fontFamily: "var(--font-sans)" }}>Lists</h2>
         <div className="flex flex-wrap items-center gap-3">
+          <button
+            onClick={() => setActiveList(null)}
+            className={cn(
+              "pill-shadow flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold transition hover:-translate-y-0.5",
+              activeList === null ? "bg-day" : "bg-pill hover:bg-day/70",
+            )}
+          >
+            <Leaf className="h-4 w-4" /> {format(date, "EEEE")}
+          </button>
           {lists.map((l) => (
             <div key={l.id} className="group relative">
               <button
-                onClick={() => setActiveList(activeList === l.id ? GENERAL : l.id)}
+                onClick={() => setActiveList(activeList === l.id ? null : l.id)}
                 className={cn(
                   "pill-shadow rounded-lg px-5 py-2 text-sm font-semibold transition hover:-translate-y-0.5",
                   activeList === l.id ? "bg-day" : "bg-pill hover:bg-day/70",
@@ -156,8 +166,13 @@ function TodoPage() {
         </div>
 
         {/* Day */}
-        <h2 className="mt-5 mb-2 text-sm font-semibold" style={{ fontFamily: "var(--font-sans)" }}>
-          {activeName ?? format(date, "EEEE")}
+        <h2 className="mt-5 mb-2 flex items-center gap-2 text-sm font-semibold" style={{ fontFamily: "var(--font-sans)" }}>
+          {activeList ? activeName : (
+            <>
+              {format(date, "EEEE")}
+              {isToday(date) && <Leaf className="h-4 w-4" />}
+            </>
+          )}
         </h2>
         <div className="grid gap-4 md:grid-cols-[1fr_1.2fr]">
           <section className="glass min-h-72 rounded-xl p-4">
