@@ -79,7 +79,7 @@ function TodoPage() {
               <Calendar
                 mode="single"
                 selected={date}
-                onSelect={(d) => { if (d) { setDate(d); setCalOpen(false); } }}
+                onSelect={(d) => { if (d) { setDate(d); setActiveList(null); setCalOpen(false); } }}
                 weekStartsOn={1}
                 className="pointer-events-auto p-3"
               />
@@ -99,7 +99,7 @@ function TodoPage() {
               return (
                 <button
                   key={d.toISOString()}
-                  onClick={() => setDate(d)}
+                  onClick={() => { setDate(d); setActiveList(null); }}
                   className={cn(
                     "pill-shadow flex aspect-[4/4.5] flex-col items-center justify-center rounded-lg text-sm transition hover:-translate-y-1",
                     sel ? "border border-foreground/60 bg-day-active" : "bg-day hover:bg-day-active/70",
