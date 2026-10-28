@@ -1,12 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { addDays, format, isSameDay, startOfWeek } from "date-fns";
-import { CalendarIcon, ChevronLeft, ChevronRight, ImageIcon, Plus, X } from "lucide-react";
+import { CalendarIcon, Camera, ChevronLeft, ChevronRight, ImageIcon, Pencil, Plus, Trash2, X } from "lucide-react";
 import sea from "@/assets/sea.png.asset.json";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { greeting, migrateDayTasks, usePersisted } from "@/lib/todo-store";
+import { DEFAULT_NAME, greeting, migrateDayTasks, usePersisted, useProfile, type Profile } from "@/lib/todo-store";
 import { EmojiPicker, Sticker } from "@/components/EmojiPicker";
 
 export const Route = createFileRoute("/todo")({
@@ -27,6 +27,7 @@ const uid = () => Math.random().toString(36).slice(2, 10);
 
 function TodoPage() {
   useEffect(() => { migrateDayTasks(); }, []);
+  const [{ name, photo }, setProfile] = useProfile();
   const [date, setDate] = useState(new Date());
   const [lists, setLists] = usePersisted<List[]>("todo.lists", []);
   const [activeList, setActiveList] = useState<string | null>(null);
@@ -69,7 +70,7 @@ function TodoPage() {
       <div className="mx-auto max-w-5xl">
         <header className="mb-6 flex items-center justify-between gap-4">
           <Link to="/" className="text-4xl md:text-5xl" style={{ fontFamily: "var(--font-display)" }}>
-            {greeting()}, Åsa <Sticker name="hibiscus" className="inline-block h-[1em] w-[1em] align-[-0.1em]" />
+            {greeting()}, {name} <Sticker name="hibiscus" className="inline-block h-[1em] w-[1em] align-[-0.1em]" />
           </Link>
           <Popover open={calOpen} onOpenChange={setCalOpen}>
             <PopoverTrigger className="pill-shadow flex items-center gap-2 rounded-lg bg-pill px-3 py-1.5 text-xs font-semibold transition hover:-translate-y-0.5 hover:bg-day md:px-5 md:py-2 md:text-sm">
@@ -87,6 +88,7 @@ function TodoPage() {
               />
             </PopoverContent>
           </Popover>
+          <ProfileMenu profile={{ name, photo }} onChange={setProfile} />
         </header>
 
         {/* Week strip */}
