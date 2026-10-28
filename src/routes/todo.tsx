@@ -1,12 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { addDays, format, isSameDay, isToday, startOfWeek } from "date-fns";
 import { CalendarIcon, ChevronLeft, ChevronRight, ImageIcon, Leaf, Plus, X } from "lucide-react";
 import beach from "@/assets/beach.jpg";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { greeting, usePersisted } from "@/lib/todo-store";
+import { greeting, migrateDayTasks, usePersisted } from "@/lib/todo-store";
 import { EmojiPicker, Sticker } from "@/components/EmojiPicker";
 
 export const Route = createFileRoute("/todo")({
@@ -26,6 +26,7 @@ type List = { id: string; name: string };
 const uid = () => Math.random().toString(36).slice(2, 10);
 
 function TodoPage() {
+  useEffect(() => { migrateDayTasks(); }, []);
   const [date, setDate] = useState(new Date());
   const [lists, setLists] = usePersisted<List[]>("todo.lists", []);
   const [activeList, setActiveList] = useState<string | null>(null);
