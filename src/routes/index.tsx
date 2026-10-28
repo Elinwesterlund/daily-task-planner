@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import sea from "@/assets/sea.png.asset.json";
 import { Sticker } from "@/components/EmojiPicker";
-import { greeting } from "@/lib/todo-store";
+import { greeting, useProfile } from "@/lib/todo-store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -16,12 +16,13 @@ export const Route = createFileRoute("/")({
 });
 
 function Welcome() {
+  const [{ name }] = useProfile();
   return (
     <main
       className="flex min-h-screen flex-col items-center justify-center bg-cover bg-center px-4 text-center"
       style={{ backgroundImage: `url(${sea.url})` }}
     >
-      <h1 className="text-5xl md:text-6xl">{greeting()}, Åsa <Sticker name="hibiscus" className="inline-block h-[1em] w-[1em] align-[-0.1em]" /></h1>
+      <h1 className="text-5xl md:text-6xl">{greeting()}, {name} <Sticker name="hibiscus" className="inline-block h-[1em] w-[1em] align-[-0.1em]" /></h1>
       <p className="mt-3 text-sm">Let's start planning today's journey, one task at a time.</p>
       <Link
         to="/todo"
